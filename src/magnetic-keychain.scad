@@ -1,8 +1,11 @@
-function in_to_mm(in) = in * 25.4;
 
-// User Control Variables
+// User Controled Variables
+
 $fs = 0.6;
 $fa = 6;
+
+// flat, male or female
+KEYCHAIN_TYPE = "male";
 
 TOLERANCE = 0.05;
 
@@ -13,8 +16,9 @@ WALL_THICKNESS = 2;
 
 LOOP_THICKNESS = 1.4;
 LOOP_WIDTH = 4;
+RELIEF_RADIUS = 2;
 
-SKIRT_WALL_THIKNESS = 0.6;
+SKIRT_WALL_THIKNESS = 0.4;
 
 // Calculated Variables
 MAGNET_RADIUS = MAGNET_DIAMETER/2;
@@ -24,6 +28,7 @@ BASE_HEIGHT = MAGNET_HEIGHT + WALL_THICKNESS;
 TOTAL_HEIGHT = BASE_HEIGHT + BASE_RADIUS;
 HOLE_HEIGHT = BASE_HEIGHT + BASE_RADIUS - LOOP_HOLE_RADIUS - LOOP_THICKNESS;
 
+function in_to_mm(in) = in * 25.4;
 
 module Magnet(tolerance = 0){
 	translate([0,0,-tolerance])
@@ -34,7 +39,7 @@ module Magnet(tolerance = 0){
 }
 
 module Base(){
-	union(){
+	hull(){
 		cylinder(
 			h = MAGNET_HEIGHT + WALL_THICKNESS,
 			r = MAGNET_RADIUS + WALL_THICKNESS
@@ -46,11 +51,11 @@ module Base(){
 	}
 }
 
-module LoopReliefCut(radius = 2, size = 10,){
-	translate([-size/2,radius , radius])
+module LoopReliefCut(){
+	translate([-BASE_RADIUS,RELIEF_RADIUS, RELIEF_RADIUS])
 	minkowski(){
-		cube(size = size);
-		sphere(radius);
+		cube(size = BASE_RADIUS*2);
+		sphere(RELIEF_RADIUS);
 	}
 }
 
@@ -69,7 +74,7 @@ module Hole(){
 	}
 }
 
-module Skirt(){
+module Skirt(tolerance = 0){
 	skirt_r1 = MAGNET_RADIUS + SKIRT_WALL_THIKNESS ;
 	skirt_r2 = BASE_RADIUS - SKIRT_WALL_THIKNESS ;
 	skirt_h = skirt_r2 - skirt_r1;
@@ -91,7 +96,7 @@ module Body(){
 		Base();
 		Magnet(TOLERANCE);
 		Hole();
-		}
+	}
 }
 
 module KeyChain(style = "flat"){
@@ -108,13 +113,8 @@ module KeyChain(style = "flat"){
 		}
 	} else if (style == "flat"){
 		Body();
-	} else {
-	}
+	} else {}
 }
 
-//color("yellow")
-KeyChain("flat");
 
-
-
-
+KeyChain(style = KEYCHAIN_TYPE);
