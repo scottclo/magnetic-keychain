@@ -68,18 +68,18 @@ module Hole(){
 }
 
 module Skirt(tolerance = 0){
-	skirt_r1 = MAGNET_RADIUS + SKIRT_WALL_THIKNESS ;
-	skirt_r2 = BASE_RADIUS - SKIRT_WALL_THIKNESS ;
-	skirt_h = skirt_r2 - skirt_r1;
+	skirt_small_radius = MAGNET_RADIUS + SKIRT_WALL_THIKNESS;
+	skirt_large_radius = BASE_RADIUS - SKIRT_WALL_THIKNESS;
+	skirt_height = skirt_large_radius - skirt_small_radius;
 	difference(){
 		cylinder(
 			r = BASE_RADIUS,
-			h = skirt_h
+			h = skirt_height
 		);
 		cylinder(
-			r1 = skirt_r1,
-			r2 = skirt_r2,
-			h = skirt_h
+			r1 = skirt_small_radius,
+			r2 = skirt_large_radius,
+			h = skirt_height
 		);
 	}
 }
