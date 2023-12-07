@@ -3,7 +3,7 @@
 $fs = 0.6;
 $fa = 6;
 // flat, male or female
-KEYCHAIN_TYPE = "male";
+KEYCHAIN_TYPE = "flat";
 TOLERANCE = 0.05;
 MAGNET_DIAMETER = in_to_mm(1/4);
 MAGNET_HEIGHT = in_to_mm(1/4);
@@ -11,7 +11,7 @@ WALL_THICKNESS = 2;
 LOOP_THICKNESS = 1.4;
 LOOP_WIDTH = 4;
 RELIEF_RADIUS = 2;
-SKIRT_WALL_THIKNESS = 0.6;
+CONE_WALL_THIKNESS = 0.6;
 
 // Calculated Variables
 MAGNET_RADIUS = MAGNET_DIAMETER/2;
@@ -67,19 +67,19 @@ module Hole(){
 	}
 }
 
-module Skirt(tolerance = 0){
-	skirt_small_radius = MAGNET_RADIUS + SKIRT_WALL_THIKNESS + tolerance;
-	skirt_large_radius = BASE_RADIUS - SKIRT_WALL_THIKNESS + tolerance;
-	skirt_height = skirt_large_radius - skirt_small_radius;
+module Cone(tolerance = 0){
+	cone_small_radius = MAGNET_RADIUS + CONE_WALL_THIKNESS + tolerance;
+	cone_large_radius = BASE_RADIUS - CONE_WALL_THIKNESS + tolerance;
+	cone_height = cone_large_radius - cone_small_radius;
 	difference(){
 		cylinder(
 			r = BASE_RADIUS,
-			h = skirt_height
+			h = cone_height
 		);
 		cylinder(
-			r1 = skirt_small_radius,
-			r2 = skirt_large_radius,
-			h = skirt_height
+			r1 = cone_small_radius,
+			r2 = cone_large_radius,
+			h = cone_height
 		);
 	}
 }
@@ -96,13 +96,13 @@ module KeyChain(style = "flat"){
 	if (style == "male") {
 		difference(){
 			Body();
-			Skirt(-TOLERANCE/2);
+			Cone(-TOLERANCE/2);
 		}
 	} else if (style == "female"){
 		union(){
 			Body();
 			rotate([180,0,0])
-			Skirt(tolerance/2);
+			Cone(TOLERANCE/2);
 		}
 	} else if (style == "flat"){
 		Body();
