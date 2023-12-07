@@ -11,7 +11,7 @@ WALL_THICKNESS = 2;
 LOOP_THICKNESS = 1.4;
 LOOP_WIDTH = 4;
 RELIEF_RADIUS = 2;
-CONE_WALL_THIKNESS = 0.6;
+CONE_WALL_THICKNESS = 0.6;
 
 // Calculated Variables
 MAGNET_RADIUS = MAGNET_DIAMETER/2;
@@ -68,8 +68,8 @@ module Hole(){
 }
 
 module Cone(tolerance = 0){
-	cone_small_radius = MAGNET_RADIUS + CONE_WALL_THIKNESS + tolerance;
-	cone_large_radius = BASE_RADIUS - CONE_WALL_THIKNESS + tolerance;
+	cone_small_radius = MAGNET_RADIUS + CONE_WALL_THICKNESS + tolerance;
+	cone_large_radius = BASE_RADIUS - CONE_WALL_THICKNESS + tolerance;
 	cone_height = cone_large_radius - cone_small_radius;
 	difference(){
 		cylinder(
