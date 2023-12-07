@@ -11,7 +11,7 @@ WALL_THICKNESS = 2;
 LOOP_THICKNESS = 1.4;
 LOOP_WIDTH = 4;
 RELIEF_RADIUS = 2;
-SKIRT_WALL_THIKNESS = 0.4;
+SKIRT_WALL_THIKNESS = 0.6;
 
 // Calculated Variables
 MAGNET_RADIUS = MAGNET_DIAMETER/2;
@@ -68,8 +68,8 @@ module Hole(){
 }
 
 module Skirt(tolerance = 0){
-	skirt_small_radius = MAGNET_RADIUS + SKIRT_WALL_THIKNESS;
-	skirt_large_radius = BASE_RADIUS - SKIRT_WALL_THIKNESS;
+	skirt_small_radius = MAGNET_RADIUS + SKIRT_WALL_THIKNESS + tolerance;
+	skirt_large_radius = BASE_RADIUS - SKIRT_WALL_THIKNESS + tolerance;
 	skirt_height = skirt_large_radius - skirt_small_radius;
 	difference(){
 		cylinder(
@@ -96,13 +96,13 @@ module KeyChain(style = "flat"){
 	if (style == "male") {
 		difference(){
 			Body();
-			Skirt();
+			Skirt(-TOLERANCE/2);
 		}
 	} else if (style == "female"){
 		union(){
 			Body();
 			rotate([180,0,0])
-			Skirt();
+			Skirt(tolerance/2);
 		}
 	} else if (style == "flat"){
 		Body();
