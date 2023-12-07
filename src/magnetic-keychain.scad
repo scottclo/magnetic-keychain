@@ -1,23 +1,16 @@
-
 // User Controled Variables
 
 $fs = 0.6;
 $fa = 6;
-
 // flat, male or female
 KEYCHAIN_TYPE = "male";
-
 TOLERANCE = 0.05;
-
 MAGNET_DIAMETER = in_to_mm(1/4);
 MAGNET_HEIGHT = in_to_mm(1/4);
-
 WALL_THICKNESS = 2;
-
 LOOP_THICKNESS = 1.4;
 LOOP_WIDTH = 4;
 RELIEF_RADIUS = 2;
-
 SKIRT_WALL_THIKNESS = 0.4;
 
 // Calculated Variables
@@ -115,6 +108,5 @@ module KeyChain(style = "flat"){
 		Body();
 	} else {}
 }
-
 
 KeyChain(style = KEYCHAIN_TYPE);
