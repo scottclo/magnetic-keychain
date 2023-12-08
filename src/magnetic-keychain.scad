@@ -109,4 +109,4 @@ module KeyChain(style = "flat"){
 	} else {}
 }
 
-KeyChain(style = KEYCHAIN_TYPE);
+render()KeyChain(style = KEYCHAIN_TYPE);
