@@ -1,79 +1,79 @@
-// User Controled Variables
+// user controled variables
 
 $fs = 0.6;
 $fa = 6;
 // flat, male or female
-KEYCHAIN_TYPE = "flat";
-TOLERANCE = 0.05;
-MAGNET_DIAMETER = in_to_mm(1/4);
-MAGNET_HEIGHT = in_to_mm(1/4);
-WALL_THICKNESS = 2;
-LOOP_THICKNESS = 1.4;
-LOOP_WIDTH = 4;
-RELIEF_RADIUS = 2;
-CONE_WALL_THICKNESS = 0.6;
+keychain_type = "flat";
+tolerance = 0.05;
+magnet_diameter = in_to_mm(1/4);
+magnet_height = in_to_mm(1/4);
+wall_thickness = 2;
+loop_thickness = 1.4;
+loop_width = 4;
+relief_radius = 2;
+cone_wall_thickness = 0.6;
 
-// Calculated Variables
-MAGNET_RADIUS = MAGNET_DIAMETER/2;
-BASE_RADIUS = MAGNET_RADIUS + WALL_THICKNESS;
-LOOP_HOLE_RADIUS = (BASE_RADIUS - LOOP_THICKNESS) / 2;
-BASE_HEIGHT = MAGNET_HEIGHT + WALL_THICKNESS;
-TOTAL_HEIGHT = BASE_HEIGHT + BASE_RADIUS;
-HOLE_HEIGHT = BASE_HEIGHT + BASE_RADIUS - LOOP_HOLE_RADIUS - LOOP_THICKNESS;
+// calculated variables
+magnet_radius = magnet_diameter/2;
+base_radius = magnet_radius + wall_thickness;
+loop_hole_radius = (base_radius - loop_thickness) / 2;
+base_height = magnet_height + wall_thickness;
+total_height = base_height + base_radius;
+hole_height = base_height + base_radius - loop_hole_radius - loop_thickness;
 
 function in_to_mm(in) = in * 25.4;
 
-module Magnet(tolerance = 0){
+module magnet(tolerance = 0){
 	translate([0,0,-tolerance])
 	cylinder( 
-		h = MAGNET_HEIGHT + tolerance,
-		r = MAGNET_RADIUS + tolerance / 2
+		h = magnet_height + tolerance,
+		r = magnet_radius + tolerance / 2
 	);
 }
 
-module Base(){
+module base(){
 	hull(){
 		cylinder(
-			h = MAGNET_HEIGHT + WALL_THICKNESS,
-			r = MAGNET_RADIUS + WALL_THICKNESS
+			h = magnet_height + wall_thickness,
+			r = magnet_radius + wall_thickness
 		);
-			translate([0,0,MAGNET_HEIGHT + WALL_THICKNESS])
+			translate([0,0,magnet_height + wall_thickness])
 		sphere(
-			r = MAGNET_RADIUS + WALL_THICKNESS
+			r = magnet_radius + wall_thickness
 		);
 	}
 }
 
-module LoopReliefCut(){
-	translate([-BASE_RADIUS,RELIEF_RADIUS, RELIEF_RADIUS])
+module loopreliefcut(){
+	translate([-base_radius,relief_radius, relief_radius])
 	minkowski(){
-		cube(size = BASE_RADIUS*2);
-		sphere(RELIEF_RADIUS);
+		cube(size = base_radius*2);
+		sphere(relief_radius);
 	}
 }
 
-module Hole(){
-	translate([0,0,HOLE_HEIGHT]) rotate([90,0,0])
+module hole(){
+	translate([0,0,hole_height]) rotate([90,0,0])
 	cylinder(
-		r = LOOP_HOLE_RADIUS,
-		h = MAGNET_HEIGHT + WALL_THICKNESS * 2,
+		r = loop_hole_radius,
+		h = magnet_height + wall_thickness * 2,
 		center = true
 	);  
-	translate([0,0,BASE_HEIGHT-WALL_THICKNESS/2]){
-		translate([0,LOOP_WIDTH/2,0])
-		LoopReliefCut();
-		rotate([0,0,180])translate([0,LOOP_WIDTH/2,0])
-		LoopReliefCut();
+	translate([0,0,base_height-wall_thickness/2]){
+		translate([0,loop_width/2,0])
+		loopreliefcut();
+		rotate([0,0,180])translate([0,loop_width/2,0])
+		loopreliefcut();
 	}
 }
 
-module Cone(tolerance = 0){
-	cone_small_radius = MAGNET_RADIUS + CONE_WALL_THICKNESS + tolerance;
-	cone_large_radius = BASE_RADIUS - CONE_WALL_THICKNESS + tolerance;
+module cone(tolerance = 0){
+	cone_small_radius = magnet_radius + cone_wall_thickness + tolerance;
+	cone_large_radius = base_radius - cone_wall_thickness + tolerance;
 	cone_height = cone_large_radius - cone_small_radius;
 	difference(){
 		cylinder(
-			r = BASE_RADIUS,
+			r = base_radius,
 			h = cone_height
 		);
 		cylinder(
@@ -84,29 +84,29 @@ module Cone(tolerance = 0){
 	}
 }
 
-module Body(){
+module body(){
 	difference(){
-		Base();
-		Magnet(TOLERANCE);
-		Hole();
+		base();
+		magnet(tolerance);
+		hole();
 	}
 }
 
-module KeyChain(style = "flat"){
+module keychain(style = "flat"){
 	if (style == "male") {
 		difference(){
-			Body();
-			Cone(-TOLERANCE/2);
+			body();
+			cone(-tolerance/2);
 		}
 	} else if (style == "female"){
 		union(){
-			Body();
+			body();
 			rotate([180,0,0])
-			Cone(TOLERANCE/2);
+			cone(tolerance/2);
 		}
 	} else if (style == "flat"){
-		Body();
+		body();
 	} else {}
 }
 
-render()KeyChain(style = KEYCHAIN_TYPE);
+render()keychain(style = keychain_type);
